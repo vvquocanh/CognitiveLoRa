@@ -35,53 +35,53 @@ while true
             disp("'create_secondary': create a secondary user.");
             disp("'exit': exit the program.");
         case "create_primary"
-            user_information = create_primary_user(signal_length, sampling_frequency);
-            if isempty(user_information.amplitude_modulated_signal)
-                disp("Fail to create primary user.");
-            else
+            [amplitude_modulated_signal, user_information] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold);
+           
+            if ~isempty(user_information.amplitude_modulated_signal)
                 primary_users = [primary_users; user_information];
-                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, user_information.amplitude_modulated_signal, sampling_frequency, false);
+                figure_title = interpolate_string("Create primary user {user_information.id}");
+                draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
             end
         case "get_primary"
             for i = 1 : length(primary_users)
                 disp(primary_users(i));
             end
-        case "remove_primary"
-            index = get_index_by_input(primary_users);
-
-            if index == -1
-                disp("There is no primary user with such id.");
-            else
-                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
-                primary_users(index) = [];
-            end
-        case "primary_leave"
-            index = get_index_by_input(primary_users);
-
-            if index == -1
-                disp("There is no primary user with such id.");
-            else
-                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
-                primary_users(index).is_present = false;
-            end
-        case "primary_enter"
-            index = get_index_by_input(primary_users);
-
-            if index == -1
-                disp("There is no primary user with such id.");
-            else
-                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, false);
-                primary_users(index).is_present = true;
-            end
-        case "create_secondary"
-            [user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, power_threshold);
-            if isempty(user_information.amplitude_modulated_signal)
-                disp("Fail to create primary user.");
-            else
-                secondary_users = [secondary_users; user_information];
-                secondary_users_sensing_data = [secondary_users_sensing_data; sensing_data];
-                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, user_information.amplitude_modulated_signal, sampling_frequency, false);
-            end
+        % case "remove_primary"
+        %     index = get_index_by_input(primary_users);
+        % 
+        %     if index == -1
+        %         disp("There is no primary user with such id.");
+        %     else
+        %         amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
+        %         primary_users(index) = [];
+        %     end
+        % case "primary_leave"
+        %     index = get_index_by_input(primary_users);
+        % 
+        %     if index == -1
+        %         disp("There is no primary user with such id.");
+        %     else
+        %         amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
+        %         primary_users(index).is_present = false;
+        %     end
+        % case "primary_enter"
+        %     index = get_index_by_input(primary_users);
+        % 
+        %     if index == -1
+        %         disp("There is no primary user with such id.");
+        %     else
+        %         amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, false);
+        %         primary_users(index).is_present = true;
+        %     end
+        % case "create_secondary"
+        %     [user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, power_threshold);
+        %     if isempty(user_information.amplitude_modulated_signal)
+        %         disp("Fail to create primary user.");
+        %     else
+        %         secondary_users = [secondary_users; user_information];
+        %         secondary_users_sensing_data = [secondary_users_sensing_data; sensing_data];
+        %         amplitude_modulated_signal = process_signal(amplitude_modulated_signal, user_information.amplitude_modulated_signal, sampling_frequency, false);
+        %     end
         otherwise
             disp("Command not found.");
     end
