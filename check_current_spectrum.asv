@@ -1,0 +1,8 @@
+function is_ = check_current_spectrum(amplitude_modulated_signal, beginning_index, last_index, threshold, sampling_frequency)
+    [pxx, frequencies] = periodogram(amplitude_modulated_signal, [], [], sampling_frequency);
+
+    for index = beginning_index : last_index
+        
+    end
+end
+
