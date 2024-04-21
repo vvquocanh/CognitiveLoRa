@@ -4,18 +4,20 @@ close all;
 
 disp("LoRa - Cognitive Radio simulation.");
 
-%FREQUENCY SPECTRUM
+% FREQUENCY SPECTRUM
 frequency_spectrum_range = input("\nEnter the frequency spectrum range (kHz): ");
 sampling_frequency = frequency_spectrum_range * 2 * 1000;
 signal_length = standard_signal_length(sampling_frequency);
 
-%USERS
+% USERS
 primary_users = [];
 secondary_users = [];
 
-%AMPLITUDE MODULATED SIGNAL
+% AMPLITUDE MODULATED SIGNAL
 amplitude_modulated_signal = zeros(1, signal_length);
-pxx = [];
+
+% COGNITIVE RADIO
+power_threshold = 1e-8;
 
 %COMMAND HANDLER
 while true
@@ -36,8 +38,7 @@ while true
                 disp("Fail to create primary user.");
             else
                 primary_users = [primary_users; user_information];
-                pxx = get_pxx(amplitude_modulated_signal, user_information.amplitude_modulated_signal, sampling_frequency, false);
-                amplitude_modulated_signal = amplitude_modulated_signal + user_information.amplitude_modulated_signal;
+                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, user_information.amplitude_modulated_signal, sampling_frequency, false);
             end
         case "get_primary"
             for i = 1 : length(primary_users)
@@ -49,8 +50,7 @@ while true
             if index == -1
                 disp("There is no primary user with such id.");
             else
-                pxx = get_pxx(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
-                amplitude_modulated_signal = amplitude_modulated_signal - primary_users(index).amplitude_modulated_signal;
+                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
                 primary_users(index) = [];
             end
         case "primary_leave"
@@ -59,8 +59,7 @@ while true
             if index == -1
                 disp("There is no primary user with such id.");
             else
-                pxx = get_pxx(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
-                amplitude_modulated_signal = amplitude_modulated_signal - primary_users(index).amplitude_modulated_signal;
+                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, true);
                 primary_users(index).is_present = false;
             end
         case "primary_enter"
@@ -69,12 +68,17 @@ while true
             if index == -1
                 disp("There is no primary user with such id.");
             else
-                pxx = get_pxx(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, false);
-                amplitude_modulated_signal = amplitude_modulated_signal + primary_users(index).amplitude_modulated_signal;
+                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, false);
                 primary_users(index).is_present = true;
             end
-        case "create secondary"
-            
+        case "create_secondary"
+            user_information = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, power_threshold);
+            if isempty(user_information.amplitude_modulated_signal)
+                disp("Fail to create primary user.");
+            else
+                secondary_users = [secondary_users; user_information];
+                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, user_information.amplitude_modulated_signal, sampling_frequency, false);
+            end
         otherwise
             disp("Command not found.");
     end

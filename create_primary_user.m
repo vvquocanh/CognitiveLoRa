@@ -1,4 +1,4 @@
-function [user_information, amplitude_modulated_signal] = create_primary_user(signal_length, sampling_frequency)
+function user_information = create_primary_user(signal_length, sampling_frequency)
     [id, bandwidth, power] = get_user_input();
 
     center_frequency = input("Enter signal center frequency (kHZ): ");
