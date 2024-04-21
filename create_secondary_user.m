@@ -24,7 +24,7 @@ function center_frequency = sense_free_spectrum(pxx, frequencies, required_bandw
     last_index = 0;
     current_bandwith = 0;
     for index = 1:length(frequencies)
-        if pxx(index) <= threshold
+        if 10*log10(pxx(index)) <= threshold
             if beginning_index == 0
                 beginning_index = index;
             end

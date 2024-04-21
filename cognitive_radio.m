@@ -17,7 +17,7 @@ secondary_users = [];
 amplitude_modulated_signal = zeros(1, signal_length);
 
 % COGNITIVE RADIO
-power_threshold = 1e-8;
+power_threshold = -70;
 
 %COMMAND HANDLER
 while true
@@ -31,6 +31,7 @@ while true
             disp("'remove_primary': remove a primary user.");
             disp("'primary_leave': the primary user is not present.");
             disp("'primary_enter': the primary user is present.");
+            disp("'create_secondary': create a secondary user.");
             disp("'exit': exit the program.");
         case "create_primary"
             user_information = create_primary_user(signal_length, sampling_frequency);
