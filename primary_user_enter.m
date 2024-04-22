@@ -18,6 +18,7 @@ function [amplitude_modulated_signal, secondary_users, secondary_users_sensing_d
                 secondary_users(user_index).is_present = false;
             else
                 secondary_users(user_index).amplitude_modulated_signal = new_amplitude_modulated_signal;
+                secondary_users(user_index).center_frequency = center_frequency;
                 secondary_users_sensing_data(sensing_data_index).beginning_index = beginning_index;
                 secondary_users_sensing_data(sensing_data_index).last_index = last_index;
             end
@@ -30,6 +31,7 @@ function index = get_proper_index(id, users)
     for i = 1 : length(users)
         if users(i).id == id
             index = i;
+            return;
         end
     end
 end

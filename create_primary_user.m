@@ -1,4 +1,4 @@
-function [amplitude_modulated_signal, user_information] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold)
+function [amplitude_modulated_signal, user_information, secondary_users, secondary_users_sensing_data] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold)
     [id, bandwidth, power] = get_user_input();
 
     center_frequency = input("Enter signal center frequency (kHZ): ");
@@ -15,7 +15,7 @@ function [amplitude_modulated_signal, user_information] = create_primary_user(am
         for i = 1:length(temp_amplitude_modulated_signal)
             new_amplitude_modulated_signal(i) = temp_amplitude_modulated_signal(i);
         end
-        amplitude_modulated_signal = primary_user_enter(amplitude_modulated_signal, new_amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold);
+        [amplitude_modulated_signal, secondary_users, secondary_users_sensing_data] = primary_user_enter(amplitude_modulated_signal, new_amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold);
     end
     
     user_information = construct_user_information(id, bandwidth, power, center_frequency, new_amplitude_modulated_signal);
