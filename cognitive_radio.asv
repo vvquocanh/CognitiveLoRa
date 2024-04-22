@@ -36,12 +36,16 @@ while true
             disp("'draw_power_diagram': draw the power spectral density diagram.");
             disp("'exit': exit the program.");
         case "create_primary"
-            [amplitude_modulated_signal, user_information] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, power_threshold);
+            [amplitude_modulated_signal, user_information] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold);
            
             if ~isempty(user_information.amplitude_modulated_signal)
                 primary_users = [primary_users; user_information];
                 figure_title = interpolate_string("Create primary user {user_information.id}");
                 draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
+            end
+        case "get_primary"
+            for i = 1 : length(primary_users)
+                disp(primary_users(i));
             end
         case "remove_primary"
             index = get_index_by_input(primary_users);
@@ -60,7 +64,7 @@ while true
             if index == -1
                 disp("There is no primary user with such id.");
             else
-                [amplitude_modulated_signal, secondary_users, secondary_users_sensing_data] = primary_user_enter(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, power_threshold);
+                [amplitude_modulated_signal, secondary_users, secondary_users_sensing_data] = primary_user_enter(amplitude_modulated_signal, primary_users(index).amplitude_modulated_signal, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold);
                 primary_users(index).is_present = true;
                 figure_title = interpolate_string("Primary user {user_information.id} enter");
                 draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
@@ -76,21 +80,14 @@ while true
                 figure_title = interpolate_string("Primary user {user_information.id} leave");
                 draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
             end
-        case "get_primary"
-            for i = 1 : length(primary_users)
-                disp(primary_users(i));
-            end
         case "create_secondary"
-            [amplitude_modulated_signal, user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, power_threshold);
+            [amplitude_modulated_signal, user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, threshold);
             if ~isempty(user_information.amplitude_modulated_signal)
+                
+            end
                 secondary_users = [secondary_users; user_information];
                 secondary_users_sensing_data = [secondary_users_sensing_data; sensing_data];
-                figure_title = interpolate_string("Create secondary user {user_information.id}");
-                draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
-            end
-        case "get_secondary"
-            for i = 1 : length(secondary_users)
-                disp(secondary_users(i));
+                amplitude_modulated_signal = process_signal(amplitude_modulated_signal, user_information.amplitude_modulated_signal, sampling_frequency, false);
             end
         case "draw_power_diagram"   
             figure_title = interpolate_string("Power spectral density");

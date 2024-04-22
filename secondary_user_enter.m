@@ -1,10 +1,15 @@
-function [amplitude_modulated_signal, new_amplitude_modulated_signal, center_frequency, beginning_index, last_index] = secondary_user_enter(amplitude_modulated_signal, lora_signal, bandwidth, sampling_frequency, threshold)
-    [pxx, frequencies] = periodogram(amplitude_modulated_signal, [], [], sampling_frequency);
+function [amplitude_modulated_signal, new_amplitude_modulated_signal, center_frequency, beginning_index, last_index] = secondary_user_enter(amplitude_modulated_signal, signal_length, lora_signal, bandwidth, sampling_frequency, threshold)
+    temp_amplitude_modulated_signal = amplitude_modulated_signal_process(amplitude_modulated_signal);
+    [pxx, frequencies] = periodogram(temp_amplitude_modulated_signal, [], [], sampling_frequency);
     [center_frequency, beginning_index, last_index] = sense_free_spectrum(pxx, frequencies, bandwidth, threshold);
     if center_frequency == 0
         new_amplitude_modulated_signal = [];
     else
-        new_amplitude_modulated_signal = ammod(real(lora_signal), center_frequency, sampling_frequency);
+        new_amplitude_modulated_signal = zeros(1, signal_length);
+        temp_amplitude_modulated_signal = ammod(real(lora_signal), center_frequency, sampling_frequency);
+        for i = 1:length(temp_amplitude_modulated_signal)
+            new_amplitude_modulated_signal(i) = temp_amplitude_modulated_signal(i);
+        end
         amplitude_modulated_signal = amplitude_modulated_signal + new_amplitude_modulated_signal;
     end
 end

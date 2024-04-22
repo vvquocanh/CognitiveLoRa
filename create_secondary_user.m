@@ -6,7 +6,7 @@ function [amplitude_modulated_signal, user_information, sensing_data] = create_s
     if isempty(lora_signal)
         new_amplitude_modulated_signal = [];
     else
-        [amplitude_modulated_signal, new_amplitude_modulated_signal, center_frequency, beginning_index, last_index] = secondary_user_enter(amplitude_modulated_signal, lora_signal, bandwidth, sampling_frequency, threshold);
+        [amplitude_modulated_signal, new_amplitude_modulated_signal, center_frequency, beginning_index, last_index] = secondary_user_enter(amplitude_modulated_signal, signal_length, lora_signal, bandwidth, sampling_frequency, threshold);
     end
     
     user_information = construct_user_information(id, bandwidth, power, center_frequency, new_amplitude_modulated_signal);
