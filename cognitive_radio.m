@@ -28,12 +28,15 @@ while true
             break;
         case "help"
             disp("'create_primary': create a primary user.");
-            disp("'get_primary': print the information of all of the primary users.");
             disp("'remove_primary': remove a primary user.");
-            disp("'primary_leave': the primary user is not present.");
-            disp("'primary_enter': the primary user is present.");
+            disp("'primary_enter': the primary user appears.");
+            disp("'primary_leave': the primary user disappears.");
+            disp("'get_primary': print the information of all of the primary users.");
             disp("'create_secondary': create a secondary user.");
-            disp("'draw_power_diagram': draw the power spectral density diagram.");
+            disp("'remove_secondary': remove a secondary user.");
+            disp("'secondary_enter': the secondary user appears");
+            disp("'secondary_leave': the secondary user disappears");
+            disp("'draw_power_diagram_total': draw the total power spectral density diagram.");
             disp("'exit': exit the program.");
         case "create_primary"
             [amplitude_modulated_signal, user_information, secondary_users, secondary_users_sensing_data] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, power_threshold);
@@ -149,9 +152,12 @@ while true
             for i = 1 : length(secondary_users)
                 disp(secondary_users(i));
             end
-        case "draw_power_diagram"   
-            figure_title = interpolate_string("Power spectral density");
+        case "draw_power_diagram_total"   
+            figure_title = interpolate_string("Total power spectral density");
             draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
+        case "draw_power_diagram_seperately"
+            figure_title = interpolate_string("Seperate power spectral density");
+            draw_power_density_diagram_seperate(primary_users, secondary_users, sampling_frequency, figure_title);
         otherwise
             disp("Command not found.");
     end
