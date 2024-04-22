@@ -120,11 +120,11 @@ while true
                 sensing_data_index = get_proper_index(secondary_users(user_index).id, secondary_users_sensing_data);
                 if secondary_users(user_index).is_present == false
                     [amplitude_modulated_signal, new_amplitude_modulated_signal, center_frequency, beginning_index, last_index] = secondary_user_enter(amplitude_modulated_signal, signal_length, secondary_users_sensing_data(sensing_data_index).lora_signal, secondary_users(user_index).bandwidth, sampling_frequency, power_threshold); 
-                    secondary_users_sensing_data(sensing_data_index).center_frequency = center_frequency;
                     secondary_users_sensing_data(sensing_data_index).beginning_index = beginning_index;
                     secondary_users_sensing_data(sensing_data_index).last_index = last_index;
-                    sensing_data_index(user_index).amplitude_modulated_signal = new_amplitude_modulated_signal;
-                    sensing_data_index(user_index).is_present = true;
+                    secondary_users(user_index).center_frequency = center_frequency;
+                    secondary_users(user_index).amplitude_modulated_signal = new_amplitude_modulated_signal;
+                    secondary_users(user_index).is_present = true;
                     figure_title = interpolate_string("Secondary user {secondary_users(user_index).id} enter.");
                     draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
                 else
