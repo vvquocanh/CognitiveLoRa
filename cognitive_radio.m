@@ -34,9 +34,13 @@ while true
             disp("'get_primary': print the information of all of the primary users.");
             disp("'create_secondary': create a secondary user.");
             disp("'remove_secondary': remove a secondary user.");
-            disp("'secondary_enter': the secondary user appears");
-            disp("'secondary_leave': the secondary user disappears");
+            disp("'secondary_enter': the secondary user appears.");
+            disp("'secondary_leave': the secondary user disappears.");
             disp("'draw_power_diagram_total': draw the total power spectral density diagram.");
+            disp("'draw_power_diagram_seperately': draw the seperate power spectral density diagram.");
+            disp("'get_power_threshold': get the current power threshold for cognitive radio sensing.");
+            disp("'modify_power_threshold': modify the power threshold for cognitive radio sensing.");
+            disp("'add_noise': add the white Gaussian noise.")
             disp("'exit': exit the program.");
         case "create_primary"
             [amplitude_modulated_signal, user_information, secondary_users, secondary_users_sensing_data] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, power_threshold);
@@ -158,6 +162,12 @@ while true
         case "draw_power_diagram_seperately"
             figure_title = interpolate_string("Seperate power spectral density");
             draw_power_density_diagram_seperate(primary_users, secondary_users, sampling_frequency, figure_title);
+        case "get_power_threshold"
+            disp(interpolate_string("Threshold: {power_threshold} (dBm)"));
+        case "modify_power_threshold"
+            power_threshold = input("Input new power threshold (dBm): ");
+        case "add_noise"
+            amplitude_modulated_signal = add_noise(amplitude_modulated_signal);
         otherwise
             disp("Command not found.");
     end
@@ -182,4 +192,9 @@ function index = get_proper_index(id, users)
             index = i;
         end
     end
+end
+
+function amplitude_modulated_signal = add_noise(amplitude_modulated_signal)
+    snr = input("Enter snr (dBm): ");
+    amplitude_modulated_signal = awgn(amplitude_modulated_signal, snr);
 end
