@@ -167,7 +167,7 @@ while true
         case "modify_power_threshold"
             power_threshold = input("Input new power threshold (dBm): ");
         case "add_noise"
-            amplitude_modulated_signal = add_noise(amplitude_modulated_signal);
+            amplitude_modulated_signal = generate_colored_noise(amplitude_modulated_signal, signal_length, sampling_frequency);
             figure_title = interpolate_string("Total power spectral density");
             draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
         otherwise
@@ -194,9 +194,4 @@ function index = get_proper_index(id, users)
             index = i;
         end
     end
-end
-
-function amplitude_modulated_signal = add_noise(amplitude_modulated_signal)
-    snr = input("Enter snr (dBm): ");
-    amplitude_modulated_signal = awgn(amplitude_modulated_signal, snr);
 end
