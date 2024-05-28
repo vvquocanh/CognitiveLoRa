@@ -13,7 +13,7 @@ primary_users = [];
 secondary_users = [];
 
 % ENVIRONMENT SIGNAL
-environment_signal = [];
+environment_signal = [0; 0];
 
 % COGNITIVE RADIO
 power_threshold = -60;
@@ -93,14 +93,11 @@ while true
             for i = 1 : length(primary_users)
                 disp(primary_users(i));
             end
-        % case "create_secondary"
-        %     [amplitude_modulated_signal, user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, power_threshold);
-        %     if ~isempty(user_information.amplitude_modulated_signal)
-        %         secondary_users = [secondary_users; user_information];
-        %         secondary_users_sensing_data = [secondary_users_sensing_data; sensing_data];
-        %         figure_title = interpolate_string("Create secondary user {user_information.id}");
-        %         draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
-        %     end
+        case "create_secondary"
+            [environment_signal, user_information] = create_secondary_user(environment_signal, sampling_frequency, power_threshold);
+            secondary_users = [secondary_users; user_information];
+            figure_title = interpolate_string("Create secondary user {user_information.id}");
+            draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
         % case "remove_secondary"
         %     user_index = get_index_by_input(secondary_users);
         %     if user_index == -1
