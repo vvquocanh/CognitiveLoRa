@@ -1,5 +1,7 @@
 function [amplitude_modulated_signal, user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, threshold)
-    [id, bandwidth, power] = get_user_input();
+    [id, bandwidth, power] = get_basic_signal_input();
+    
+    []
 
     lora_signal = create_lora_signal(signal_length, bandwidth, power, sampling_frequency);
         
