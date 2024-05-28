@@ -6,7 +6,7 @@ disp("LoRa - Cognitive Radio simulation.");
 
 % FREQUENCY SPECTRUM
 frequency_spectrum_range = input("\nEnter the frequency spectrum range (kHz): ");
-sampling_frequency = frequency_spectrum_range * 2 * 1000;
+sampling_frequency = frequency_spectrum_range * 1000;
 
 % USERS
 primary_users = [];
@@ -41,26 +41,24 @@ while true
             disp("'add_noise': add the white Gaussian noise.")
             disp("'exit': exit the program.");
         case "create_primary"
-            [environment_signal, user_information, secondary_users] = create_primary_user(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, power_threshold);
-           
-            if ~isempty(user_information.amplitude_modulated_signal)
-                primary_users = [primary_users; user_information];
-                figure_title = interpolate_string("Create primary user {user_information.id}");
+            [environment_signal, user_information, secondary_users] = create_primary_user(environment_signal, sampling_frequency, secondary_users, power_threshold);
+            
+            primary_users = [primary_users; user_information];
+            figure_title = interpolate_string("Create primary user {user_information.id}");
+            draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
+        case "remove_primary"
+            index = get_index(primary_users);
+
+            if index == -1
+                disp("There is no primary user with such id.");
+            else
+                if primary_users(index).is_present == true
+                    environment_signal = sum_signal(environment_signal, primary_users(index).lora_signal);
+                end
+                figure_title = interpolate_string("Remove primary user {primary_users(index).id}");
                 draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
+                primary_users(index) = [];
             end
-        % case "remove_primary"
-        %     index = get_index_by_input(primary_users);
-        % 
-        %     if index == -1
-        %         disp("There is no primary user with such id.");
-        %     else
-        %         if primary_users(index).is_present == true
-        %             amplitude_modulated_signal = amplitude_modulated_signal - primary_users(index).amplitude_modulated_signal;
-        %         end
-        %         figure_title = interpolate_string("Remove primary user {primary_users(index).id}");
-        %         draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
-        %         primary_users(index) = [];
-        %     end
         % case "primary_enter"
         %     index = get_index_by_input(primary_users);
         % 
@@ -91,10 +89,10 @@ while true
         %             disp("Primary user is already not present.");
         %         end
         %     end
-        % case "get_primary"
-        %     for i = 1 : length(primary_users)
-        %         disp(primary_users(i));
-        %     end
+        case "get_primary"
+            for i = 1 : length(primary_users)
+                disp(primary_users(i));
+            end
         % case "create_secondary"
         %     [amplitude_modulated_signal, user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, power_threshold);
         %     if ~isempty(user_information.amplitude_modulated_signal)
@@ -175,13 +173,9 @@ end
 
 % FUNCTION
 
-function index = get_index_by_input(users)
+function index = get_index(users)
     id = input("Enter user id: ", "s");
 
-    index = get_proper_index(id, users);
-end
-
-function index = get_proper_index(id, users)
     index = -1;
     for i = 1 : length(users)
         if users(i).id == id
