@@ -1,14 +1,11 @@
-function lora_signal = create_lora_signal(signal_length, bandwidth, power, sampling_frequency)
-    power_offset = 6;
-    power = power + power_offset;
-    for spreading_factor = 12 : -1 : 7
-        signal = LoRa_Tx("Hello World!", bandwidth, spreading_factor, power, sampling_frequency, 0);
-        if length(signal) <= signal_length
-            lora_signal = signal;
-            return;
-        end
+function lora_signal = create_lora_signal(center_frequency, bandwidth, power, sampling_frequency, message, spreading_factor)
+    if nargin < 5
+        message = "Hello World";
+    end
+    if nargin < 6
+        spreading_factor = 7;
     end
 
-    lora_signal = [];
+    lora_signal = LoRa_Tx(message, bandwidth, spreading_factor, power, sampling_frequency, center_frequency);
 end
 
