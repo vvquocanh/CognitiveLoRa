@@ -107,19 +107,19 @@ while true
             figure_title = interpolate_string("Create secondary user {user_information.id}");
             draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
         case "remove_secondary"
-            index = get_index_by_input(secondary_users);
+            index = get_index(secondary_users);
             if index == -1
                 disp("There is no secondary user with such id.");
             else
                 if secondary_users(index).is_present == true
                     environment_signal = environment_signal - secondary_users(index).signal;
                 end
-                figure_title = interpolate_string("Remove primary user {primary_users(user_index).id}");
+                figure_title = interpolate_string("Remove primary user {primary_users(index).id}");
                 draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
                 secondary_users(index) = [];
             end
         case "secondary_enter"
-            index = get_index_by_input(secondary_users);
+            index = get_index(secondary_users);
             if index == -1
                 disp("There is no secondary user with such id.");
             else
@@ -134,21 +134,21 @@ while true
                     secondary_users(index).center_frequency = center_frequency;
                     secondary_users(index).signal = lora_signal;
                     secondary_users(index).is_present = true;
-                    figure_title = interpolate_string("Secondary user {secondary_users(user_index).id} enter.");
+                    figure_title = interpolate_string("Secondary user {secondary_users(index).id} enter.");
                     draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
                 else
                     disp("Secondary user is already present.");
                 end
             end
         case "secondary_leave"
-            index = get_index_by_input(secondary_users);
+            index = get_index(secondary_users);
             if index == -1
                 disp("There is no secondary user with such id.");
             else
                 if secondary_users(index).is_present == true
                     environment_signal = environment_signal - secondary_users(index).signal;
                     secondary_users(index).is_present = false;
-                    figure_title = interpolate_string("Secondary user {secondary_users(user_index).id} leave.");
+                    figure_title = interpolate_string("Secondary user {secondary_users(index).id} leave.");
                     draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
                 else
                     disp("Secondary user is already not present.");
