@@ -169,9 +169,9 @@ while true
         case "modify_power_threshold"
             power_threshold = input("Input new power threshold (dBm): ");
         case "add_noise"
-            [amplitude_modulated_signal, secondary_users, secondary_users_sensing_data] = generate_colored_noise(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, power_threshold);
+            [environment_signal, secondary_users] = generate_colored_noise(environment_signal, sampling_frequency, secondary_users, power_threshold);
             figure_title = interpolate_string("Total power spectral density");
-            draw_power_density_diagram(amplitude_modulated_signal, sampling_frequency, figure_title);
+            draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
         otherwise
             disp("Command not found.");
     end

@@ -1,4 +1,4 @@
-function [environment_signal, secondary_users] = generate_colored_noise(environment_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold)
+function [environment_signal, secondary_users] = generate_colored_noise(environment_signal, sampling_frequency, secondary_users, threshold)
     center_frequency = input("Enter noise center frequency (kHz): ");
     center_frequency = center_frequency * 1000;
     bandwidth = input("Enter noise bandwidth (kHz): ");
