@@ -8,7 +8,7 @@ function is_available = check_current_spectrum(environment_signal, center_freque
     right_pointer = frequency_index;
 
     while (frequencies(right_pointer) - frequencies(left_pointer)) < bandwidth
-        if 10*log10(pxx(index)) > threshold
+        if (10*log10(pxx(left_pointer)) > threshold) || (10*log10(pxx(right_pointer)) > threshold)
             is_available = false;
             return
         end

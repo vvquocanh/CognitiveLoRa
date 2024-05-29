@@ -3,8 +3,9 @@ function [environment_signal, secondary_users] = generate_colored_noise(environm
     center_frequency = center_frequency * 1000;
     bandwidth = input("Enter noise bandwidth (kHz): ");
     bandwidth = bandwidth * 1000;
+    sampling_frequency = sampling_frequency * 2;
 
-    noise = randn(1, length(environment_signal));
+    noise = randn(1, 1e4);
     noise_fft = fft(noise);
     N = length(noise_fft);
 
@@ -15,6 +16,6 @@ function [environment_signal, secondary_users] = generate_colored_noise(environm
     noise_filtered = real(ifft(mask.*noise_fft));
     environment_signal = sum_signal(environment_signal, noise_filtered');
 
-    [environment_signal, secondary_users] = secondary_users_move(environment_signal, sampling_frequency, secondary_users, threshold);
+    [environment_signal, secondary_users] = secondary_user_move(environment_signal, sampling_frequency, secondary_users, threshold);
 end
 
