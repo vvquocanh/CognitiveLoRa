@@ -1,10 +1,11 @@
-function [amplitude_modulated_signal, secondary_users, secondary_users_sensing_data] = generate_colored_noise(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold)
+function [environment_signal, secondary_users] = generate_colored_noise(environment_signal, sampling_frequency, secondary_users, threshold)
     center_frequency = input("Enter noise center frequency (kHz): ");
     center_frequency = center_frequency * 1000;
     bandwidth = input("Enter noise bandwidth (kHz): ");
     bandwidth = bandwidth * 1000;
+    sampling_frequency = sampling_frequency * 2;
 
-    noise = randn(1, signal_length);
+    noise = randn(1, 1e4);
     noise_fft = fft(noise);
     N = length(noise_fft);
 
@@ -13,8 +14,8 @@ function [amplitude_modulated_signal, secondary_users, secondary_users_sensing_d
     mask(frequency > center_frequency-bandwidth/2 & frequency < center_frequency+bandwidth/2) = 1;
 
     noise_filtered = real(ifft(mask.*noise_fft));
-    amplitude_modulated_signal = amplitude_modulated_signal + noise_filtered;
+    environment_signal = sum_signal(environment_signal, noise_filtered');
 
-    [amplitude_modulated_signal, secondary_users, secondary_users_sensing_data] = secondary_users_move(amplitude_modulated_signal, signal_length, sampling_frequency, secondary_users, secondary_users_sensing_data, threshold);
+    [environment_signal, secondary_users] = secondary_user_move(environment_signal, sampling_frequency, secondary_users, threshold);
 end
 

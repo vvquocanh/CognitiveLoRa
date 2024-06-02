@@ -1,21 +1,14 @@
-function [amplitude_modulated_signal, user_information, sensing_data] = create_secondary_user(amplitude_modulated_signal, signal_length, sampling_frequency, threshold)
-    [id, bandwidth, power] = get_user_input();
-
-    lora_signal = create_lora_signal(signal_length, bandwidth, power, sampling_frequency);
-        
-    actual_power = power;
-
-    if isempty(lora_signal)
-        new_amplitude_modulated_signal = [];
-    else
-        [amplitude_modulated_signal, new_amplitude_modulated_signal, center_frequency, beginning_index, last_index] = secondary_user_enter(amplitude_modulated_signal, signal_length, lora_signal, bandwidth, sampling_frequency, threshold);
-        actual_power = 10 *log10(rms(amplitude_modulated_signal_process(new_amplitude_modulated_signal)).^2);
-    end
+function [environment_signal, user_information] = create_secondary_user(environment_signal, sampling_frequency, threshold)
+    [id, bandwidth, power] = get_basic_signal_input();
     
-    user_information = construct_user_information(id, bandwidth, actual_power, center_frequency, new_amplitude_modulated_signal);
-    if isempty(new_amplitude_modulated_signal)
-        disp("No free spectrum available for user " + id + ".");
+    [message, spreading_factor] = get_advanced_user_input();
+    
+    [environment_signal, lora_signal, center_frequency] = secondary_user_enter(environment_signal, id, message, bandwidth, spreading_factor, power, sampling_frequency, threshold);
+    
+    power = 10*log10(rms(lora_signal).^2);
+    user_information = construct_user_information(id, message, bandwidth, spreading_factor, power, center_frequency, lora_signal);
+    
+    if center_frequency == 910e6
         user_information.is_present = false;
     end
-    sensing_data = construct_sensing_data(id, lora_signal, beginning_index, last_index);
 end

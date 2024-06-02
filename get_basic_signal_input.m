@@ -1,4 +1,4 @@
-function [id, bandwidth, power] = get_user_input()
+function [id, bandwidth, power] = get_basic_signal_input()
     id = input("Enter user id: ", "s");
     
     bandwidth = input("Enter signal bandwidth (kHZ, minumum 25kHZ): ");
@@ -8,5 +8,8 @@ function [id, bandwidth, power] = get_user_input()
     end
     
     power = input("Enter power (dBm): ");
+    if power > 20
+        power = 20;
+    end
 end
 

@@ -7,7 +7,7 @@ function draw_power_density_diagram_seperate(primary_users, secondary_users, sam
         if primary_users(index).is_present == false
             continue;
         end
-        [pxx, frequencies] = periodogram(primary_users(index).amplitude_modulated_signal, [], [], sampling_frequency);
+        [pxx, frequencies] = periodogram(primary_users(index).lora_signal, [], [], sampling_frequency);
         pxx_list = [pxx_list, pxx];
         frequencies_list = [frequencies_list, frequencies];
         legend_list{end + 1} = interpolate_string("Primary {primary_users(index).id}");
@@ -17,7 +17,7 @@ function draw_power_density_diagram_seperate(primary_users, secondary_users, sam
         if secondary_users(index).is_present == false
             continue;
         end
-        [pxx, frequencies] = periodogram(secondary_users(index).amplitude_modulated_signal, [], [], sampling_frequency);
+        [pxx, frequencies] = periodogram(secondary_users(index).lora_signal, [], [], sampling_frequency);
         pxx_list = [pxx_list, pxx];
         frequencies_list = [frequencies_list, frequencies];
         legend_list{end + 1} = interpolate_string("Secondary {secondary_users(index).id}");

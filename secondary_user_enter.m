@@ -1,44 +1,15 @@
-function [amplitude_modulated_signal, new_amplitude_modulated_signal, center_frequency, beginning_index, last_index] = secondary_user_enter(amplitude_modulated_signal, signal_length, lora_signal, bandwidth, sampling_frequency, threshold)
-    temp_amplitude_modulated_signal = amplitude_modulated_signal_process(amplitude_modulated_signal);
-    [pxx, frequencies] = periodogram(temp_amplitude_modulated_signal, [], [], sampling_frequency);
-    [center_frequency, beginning_index, last_index] = sense_free_spectrum(pxx, frequencies, bandwidth, threshold);
+function [environment_signal, lora_signal, center_frequency] = secondary_user_enter(environment_signal, id, message, bandwidth, spreading_factor, power, sampling_frequency, threshold)
+    default_center_frequency = 910e6;
+    center_frequency = sense_free_spectrum(environment_signal, bandwidth, sampling_frequency, threshold);
     if center_frequency == 0
-        new_amplitude_modulated_signal = [];
+        center_frequency = default_center_frequency;
+    end
+    
+    lora_signal = LoRa_Tx(message, bandwidth, spreading_factor, power, sampling_frequency, center_frequency);
+
+    if center_frequency == default_center_frequency
+        disp("No free spectrum available for user " + id + ", using the default center frequency 910MHz.");
     else
-        new_amplitude_modulated_signal = zeros(1, signal_length);
-        temp_amplitude_modulated_signal = ammod(real(lora_signal), center_frequency, sampling_frequency);
-        for i = 1:length(temp_amplitude_modulated_signal)
-            new_amplitude_modulated_signal(i) = temp_amplitude_modulated_signal(i);
-        end
-        amplitude_modulated_signal = amplitude_modulated_signal + new_amplitude_modulated_signal;
+        environment_signal = sum_signal(environment_signal, lora_signal);
     end
-end
-
-function [center_frequency, beginning_index, last_index] = sense_free_spectrum(pxx, frequencies, required_bandwidth, threshold)
-    beginning_index = 0;
-    last_index = 0;
-    current_bandwith = 0;
-    for index = 1:length(frequencies)
-        if 10*log10(pxx(index)) <= threshold
-            if beginning_index == 0
-                beginning_index = index;
-            end
-            if last_index == 0
-                last_index = index;
-            else
-                last_index = last_index + 1;
-            end
-            current_bandwitdh = current_bandwith + frequencies(last_index) - frequencies(beginning_index);
-            if current_bandwitdh > required_bandwidth
-                center_frequency = (frequencies(beginning_index) + frequencies(last_index)) / 2;
-                return;
-            end
-        else
-            beginning_index = 0;
-            last_index = 0;
-            current_bandwith = 0;
-        end
-    end
-
-    center_frequency = 0;
 end
