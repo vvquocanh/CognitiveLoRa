@@ -5,8 +5,8 @@ function draw_power_density_diagram_seperate(primary_users, secondary_users, sam
     
     max_length = max(find_max_length(primary_users), find_max_length(secondary_users));
     
-    [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, primary_users, "Primary {primary_users(index).id}");
-    [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, secondary_users, "Secondary {secondary_users(index).id}");
+    [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, primary_users, "Primary {users(index).id}");
+    [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, secondary_users, "Secondary {users(index).id}");
 
     figure;
     plot(frequencies_list, 10*log10(pxx_list));
@@ -29,7 +29,7 @@ end
 
 function [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, users, users_title)
      for index = 1 : length(users)
-        if primary_users(index).is_present == false
+        if users(index).is_present == false
             continue;
         end
         signal = [users(index).signal; zeros(max_length - length(users(index).signal), 1)];
