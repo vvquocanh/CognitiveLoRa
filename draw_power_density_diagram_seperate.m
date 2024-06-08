@@ -3,25 +3,10 @@ function draw_power_density_diagram_seperate(primary_users, secondary_users, sam
     pxx_list = [];
     frequencies_list = [];
     
-    for index = 1 : length(primary_users)
-        if primary_users(index).is_present == false
-            continue;
-        end
-        [pxx, frequencies] = periodogram(primary_users(index).lora_signal, [], [], sampling_frequency);
-        pxx_list = [pxx_list, pxx];
-        frequencies_list = [frequencies_list, frequencies];
-        legend_list{end + 1} = interpolate_string("Primary {primary_users(index).id}");
-    end
+    max_length = max(find_max_length(primary_users), find_max_length(secondary_users));
     
-    for index = 1 : length(secondary_users)
-        if secondary_users(index).is_present == false
-            continue;
-        end
-        [pxx, frequencies] = periodogram(secondary_users(index).lora_signal, [], [], sampling_frequency);
-        pxx_list = [pxx_list, pxx];
-        frequencies_list = [frequencies_list, frequencies];
-        legend_list{end + 1} = interpolate_string("Secondary {secondary_users(index).id}");
-    end
+    [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, primary_users, "Primary {users(index).id}");
+    [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, secondary_users, "Secondary {users(index).id}");
 
     figure;
     plot(frequencies_list, 10*log10(pxx_list));
@@ -32,3 +17,25 @@ function draw_power_density_diagram_seperate(primary_users, secondary_users, sam
     grid on;
 end
 
+function max_length = find_max_length(users)
+    max_length = 0;
+    for index = 1 : length(users)
+        signal_length = length(users(index).signal);
+        if signal_length > max_length
+            max_length = signal_length;
+        end
+    end
+end
+
+function [pxx_list, frequencies_list, legend_list] = get_pxx_frequencies(pxx_list, frequencies_list, legend_list, sampling_frequency, max_length, users, users_title)
+     for index = 1 : length(users)
+        if users(index).is_present == false
+            continue;
+        end
+        signal = [users(index).signal; zeros(max_length - length(users(index).signal), 1)];
+        [pxx, frequencies] = periodogram(signal, [], [], sampling_frequency);
+        pxx_list = [pxx_list, pxx];
+        frequencies_list = [frequencies_list, frequencies];
+        legend_list{end + 1} = interpolate_string(users_title);
+    end
+end
