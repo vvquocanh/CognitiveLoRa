@@ -32,6 +32,7 @@ function frequency_index = find_frequency_index(frequencies, center_frequency)
             else
                 frequency_index = index - 1;
             end
+            return
         end
     end
 end
