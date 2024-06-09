@@ -32,6 +32,7 @@ while true
             disp("'get_primary': print the information of all of the primary users.");
             disp("'create_secondary': create a secondary user.");
             disp("'remove_secondary': remove a secondary user.");
+            disp("'capture_secondary'：capture the secondary user's signal to get the message.")
             disp("'secondary_enter': the secondary user appears.");
             disp("'secondary_leave': the secondary user disappears.");
             disp("'draw_power_diagram_total': draw the total power spectral density diagram.");
@@ -117,6 +118,24 @@ while true
                 figure_title = interpolate_string("Remove primary user {primary_users(index).id}");
                 draw_power_density_diagram(environment_signal, sampling_frequency, figure_title);
                 secondary_users(index) = [];
+            end
+        case "capture_secondary"
+            index = get_index(secondary_users);
+            if index == -1
+                disp("There is no secondary user with such id.");
+            else
+                if secondary_users(index).is_present == true
+                    message = capture_lora_message(environment_signal, ...
+                        secondary_users(index).bandwidth, ...
+                        secondary_users(index).spreading_factor, ...
+                        sampling_frequency, ...
+                        secondary_users(index).center_frequency);
+                    message = char(message);
+                    display_message = interpolate_string("Message from user {secondary_users(index).id} is: {message}");
+                    disp(display_message);
+                else
+                    disp("Secondary user is not present");
+                end
             end
         case "secondary_enter"
             index = get_index(secondary_users);
