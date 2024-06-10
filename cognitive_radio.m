@@ -35,6 +35,7 @@ while true
             disp("'capture_secondary'：capture the secondary user's signal to get the message.")
             disp("'secondary_enter': the secondary user appears.");
             disp("'secondary_leave': the secondary user disappears.");
+            disp("'get_secondary': print the information of all the secondary users.");
             disp("'draw_power_diagram_total': draw the total power spectral density diagram.");
             disp("'draw_power_diagram_seperately': draw the seperate power spectral density diagram.");
             disp("'get_power_threshold': get the current power threshold for cognitive radio sensing.");
